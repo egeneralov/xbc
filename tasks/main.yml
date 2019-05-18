@@ -39,3 +39,22 @@
     state: "{% if tgz is changed or bin is changed or svc is changed %}re{% endif %}started"
     enabled: yes
     daemon_reload: yes
+
+- name: "configure : haproxy"
+  blockinfile:
+    block: |
+      frontend http_front
+        bind *:3517
+        stats uri /haproxy?stats
+        default_backend http_back
+      
+      backend http_back
+        server http1 127.0.0.1:8885 check
+  register: hp
+
+- name: "(re)start : haproxy.service"
+  systemd:
+    name: haproxy.service
+    state: "{% if hp is changed %}re{% endif %}started"
+    enabled: yes
+    daemon_reload: yes

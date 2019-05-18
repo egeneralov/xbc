@@ -1,7 +1,7 @@
 egeneralov.xbc
 ==============
 
-Provision Bitcoin Plus (xbc) node
+Provision Bitcoin Plus (xbc) node. Will be exposed to *:3517.
 
 Requirements
 ------------
