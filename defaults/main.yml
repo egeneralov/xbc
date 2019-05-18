@@ -1,2 +1,7 @@
 ---
 # defaults file for egeneralov.xbc
+
+version: 2.7.0
+rpcuser: test
+rpcpassword: test
+datadir: /var/lib/bitcoinplus/

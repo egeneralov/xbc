@@ -1,2 +1,36 @@
 ---
 # tasks file for egeneralov.xbc
+
+- name: "install : system-wide deps"
+  apt:
+    name:
+      - haproxy
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: "download : release"
+  get_url:
+    src: "https://github.com/bitcoinplusorg/xbcwalletsource/releases/download/v{{ version }}/bitcoinplus-{{ version }}-linux64.tar.gz"
+    remote_src: yes
+    dest: "/opt/bitcoinplus-{{ version }}-linux64.tar.gz"
+  register: tgz
+
+- name: "unarchive : release"
+  unarchive:
+    remote_src: yes
+    src: "/opt/bitcoinplus-{{ version }}-linux64.tar.gz"
+    dest: "/usr/local/bin/"
+  register: bin
+
+- name: "configure : xbc.service"
+  template:
+    src: xbc.service.j2
+    dest: /etc/systemd/system/xbc.service
+    daemon_reload: yes
+  register: svc
+
+- name: "(re)start : xbc.service"
+  systemd:
+    name: xbc.service
+    status: "{% if tgz is changed or bin is changed or svc is changed %}re{% endif %}started"
+    enable: yes

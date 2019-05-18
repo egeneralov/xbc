@@ -1,0 +1,10 @@
+[Unit]
+Description=Bitcoin Plus daemon service
+
+[Service]
+Type=forking
+Restart=always
+ExecStart=/usr/local/bin/bitcoinplusd -datadir={{ datadir }} -server -daemon -discover -rpcuser={{ rpcuser }} -rpcpassword={{ rpcpassword }}
+
+[Install]
+WantedBy=multi-user.target
