@@ -10,7 +10,7 @@
 
 - name: "download : release"
   get_url:
-    src: "https://github.com/bitcoinplusorg/xbcwalletsource/releases/download/v{{ version }}/bitcoinplus-{{ version }}-linux64.tar.gz"
+    url: "https://github.com/bitcoinplusorg/xbcwalletsource/releases/download/v{{ version }}/bitcoinplus-{{ version }}-linux64.tar.gz"
     remote_src: yes
     dest: "/opt/bitcoinplus-{{ version }}-linux64.tar.gz"
   register: tgz
@@ -26,11 +26,16 @@
   template:
     src: xbc.service.j2
     dest: /etc/systemd/system/xbc.service
-    daemon_reload: yes
   register: svc
+
+- name: "configure : datadir"
+  file:
+    path: "{{ datadir }}"
+    state: directory
 
 - name: "(re)start : xbc.service"
   systemd:
     name: xbc.service
-    status: "{% if tgz is changed or bin is changed or svc is changed %}re{% endif %}started"
-    enable: yes
+    state: "{% if tgz is changed or bin is changed or svc is changed %}re{% endif %}started"
+    enabled: yes
+    daemon_reload: yes
